@@ -6,6 +6,8 @@
 #include<SDL.h>
 #include<SDL_image.h>
 #include<vector>
+#include<fstream>
+#include<SDL_mixer.h>
 
 
 using namespace std;
@@ -26,12 +28,13 @@ private:
     double frameStart;
     double lastFrame = 0;
     SDL_Event event1;
-    bool check1=false;
+    bool check1;
 
     SDL_Rect playersrc, playerdest;
     SDL_Rect grasssrc, grassdest;
     SDL_Rect gameoversrc, gameoverdest;
-    SDL_Rect buttonsrc, buttondest={0,0,0,0};
+    SDL_Rect buttonsrc, buttondest;
+    SDL_Rect exitsrc, exitdest;
     int x,y;
 
     int blank;
@@ -42,8 +45,18 @@ private:
     SDL_Texture* gameover;
     SDL_Texture* mainmenu;
     SDL_Texture* buttonStart;
+    SDL_Texture* exitButton;
 
     deque<SDL_Rect> pipes;
+    int Score;
+    bool checkAddScore;
+    bool checkover;
+    string state;
+
+
+    Mix_Chunk* g_music;
+
+
 
 
 public:
@@ -62,6 +75,9 @@ public:
     void handle_pipes();
     bool game_over();
     void run();
+    bool checkCollision(SDL_Rect a, SDL_Rect b);
+    void game_Over();
+    void setrectMenu();
 
     PipePair generate_pipe_pair();
 
@@ -73,5 +89,9 @@ class texture
 public:
     static SDL_Texture* Texture(const char* filelocation, SDL_Renderer* ren);
 };
+
+
+
+
 
 #endif // COMMONFUNCTION_H_INCLUDED

@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1619105341 source:e:\fb\game\main.cpp
+1619236913 source:e:\fb\game\main.cpp
 	<exception>
 	<string>
 	<iostream>
@@ -376,15 +376,17 @@
 	"begin_code.h"
 	"close_code.h"
 
-1619070263 source:e:\fb\game\commonfunction.cpp
+1619451432 source:e:\fb\game\commonfunction.cpp
 	"CommonFunction.h"
 
-1619105341 e:\fb\game\commonfunction.h
+1619451432 e:\fb\game\commonfunction.h
 	<bits/stdc++.h>
 	<string>
 	<SDL.h>
 	<SDL_image.h>
 	<vector>
+	<fstream>
+	<SDL_mixer.h>
 
 1476935975 f:\sdl2-2.0.5\x86_64-w64-mingw32\include\sdl2\sdl.h
 	"SDL_main.h"
@@ -713,6 +715,15 @@
 
 1547322290 f:\sdl2_ttf-2.0.15\x86_64-w64-mingw32\include\sdl2\sdl_ttf.h
 	"SDL.h"
+	"begin_code.h"
+	"close_code.h"
+
+1540998018 f:\sdl2_mixer-2.0.4\x86_64-w64-mingw32\include\sdl2\sdl_mixer.h
+	"SDL_stdinc.h"
+	"SDL_rwops.h"
+	"SDL_audio.h"
+	"SDL_endian.h"
+	"SDL_version.h"
 	"begin_code.h"
 	"close_code.h"
 

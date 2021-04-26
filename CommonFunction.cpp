@@ -7,7 +7,12 @@ CommonFuntion::CommonFuntion()
     gravity = 0.05;
     speed = 1;
     speedFly = -1.5;
-    blank = 200;
+    blank = 180;
+    Score = 0;
+    checkAddScore = true;
+    check1 = false;
+    checkover = false;
+    g_music = NULL;
 }
 
 bool CommonFuntion::getcheck()
@@ -38,6 +43,7 @@ void CommonFuntion::Initializer()
                 gameover = texture::Texture("Image/gameover.png", renderer);
                 mainmenu = texture::Texture("Image/background.png", renderer);
                 buttonStart = texture::Texture("Image/startbutton.png", renderer);
+                g_music = Mix_LoadWAV("music/flappy_assets_jump.wav");
             }
             else
             {
@@ -54,16 +60,28 @@ void CommonFuntion::Initializer()
                    cout<<"SDL_image could not initialize! SDL_image Error: %s\n"<<IMG_GetError()<<endl;
                     running = false;
                 }
-        playerdest.y = pipes.front().h + 150;
+            if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1)
+                {
+                    cout<<Mix_GetError()<<endl;
+                }
+        playerdest.y = pipes.front().h+100;
 
 
-        for (int i = 0; i < WIDTH + 100; i += 100)
+        for (int i = 0; i <= WIDTH+100; i += 250)
         {
             PipePair pipePump = generate_pipe_pair();
             pipePump.first.x = i;
             pipePump.second.x = i;
             pipes.push_back(pipePump.first);
             pipes.push_back(pipePump.second);
+            for (SDL_Rect p : pipes)
+            {
+                if ((playerdest.x >= pipePump.first.x+pipePump.first.w) && checkAddScore == true)
+                {
+                    Score++;
+                    checkAddScore = false;
+                }
+            }
         }
 }
 
@@ -108,9 +126,13 @@ void CommonFuntion::setrect()
     gameoverdest.h = 150;
     gameoverdest.x = (WIDTH/2)-100;
     gameoverdest.y = (HEIGHT/2)+100;
+}
 
-
-    SDL_QueryTexture(mainmenu,NULL,NULL,&buttonsrc.w,&buttonsrc.h);
+void CommonFuntion::setrectMenu()
+{
+     buttonsrc.x = buttonsrc.y = 0;
+     buttonsrc.h = 311;
+     buttonsrc.w = 860;
 
     buttondest.x = (WIDTH/2)-100;
     buttondest.y = (HEIGHT/2)-50;
@@ -119,9 +141,11 @@ void CommonFuntion::setrect()
 
 }
 
+
 void CommonFuntion::handleEvent()
 {
      while (SDL_PollEvent(&event1))
+     {
 		switch (event1.type)
 		{
 			case SDL_QUIT:
@@ -133,15 +157,16 @@ void CommonFuntion::handleEvent()
 					case SDLK_SPACE:
 						if (playerdest.y + playerdest.h > 0)
 							speed = speedFly;
+							Mix_PlayChannel(-1, g_music, 0);
 						break;
 				}
-				break;
 		}
+     }
 }
 
 void CommonFuntion::menu()
 {
-        setrect();
+        setrectMenu();
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, mainmenu, NULL, NULL);
         SDL_RenderCopy(renderer, buttonStart, &buttonsrc, &buttondest);
@@ -179,18 +204,28 @@ SDL_Texture* texture::Texture(const char* filelocation, SDL_Renderer* ren)
     return tex;
 }
 
+void CommonFuntion::game_Over()
+{
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, gameover, NULL, NULL);
+    SDL_RenderPresent(renderer);
+}
+
 void CommonFuntion::Render()
 {
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, background, NULL, NULL);
     SDL_RenderCopy(renderer, player, &playersrc, &playerdest);
     SDL_RenderCopy(renderer, grass, &grasssrc, &grassdest);
-    handle_pipes();
-	draw_pipes();
-
-    for (deque<SDL_Rect>::iterator it = pipes.begin(); it != pipes.end(); it++)
+     handle_pipes();
+     draw_pipes();
+    for (deque<SDL_Rect>::iterator it = pipes.begin(); it != pipes.end(); it+=1)
+    {
 		it->x -= 1;
     SDL_RenderPresent(renderer);
+    }
+
+     SDL_RenderPresent(renderer);
 }
 
 void CommonFuntion::clearUP()
@@ -200,6 +235,7 @@ void CommonFuntion::clearUP()
     SDL_DestroyTexture(mainmenu);
     SDL_DestroyTexture(buttonStart);
     SDL_DestroyTexture(gameover);
+    Mix_FreeChunk(g_music);
 }
 
 
@@ -207,21 +243,21 @@ void CommonFuntion::clearUP()
 void CommonFuntion::Game()
 {
     frameStart = SDL_GetTicks();
-        setrect();
-        handleEvent();
-        Render();
         if ((frameStart - lastFrame) < (1000/60))
         {
             SDL_Delay((1000/60) - (frameStart - lastFrame));
         }
         lastFrame = frameStart;
+        setrect();
+        Render();
+        handleEvent();
 }
 
 PipePair CommonFuntion::generate_pipe_pair()
 {
     PipePair pipePump;
 
-    pipePump.first.h = rand() % 100 + 80;
+    pipePump.first.h = rand() % 160 + 140;
     pipePump.second.y = pipePump.first.h + blank;
 
     pipePump.first.x = WIDTH - pipePump.first.w;
@@ -260,20 +296,31 @@ bool CommonFuntion::game_over()
 {
 	for (SDL_Rect p : pipes)
 		if (SDL_HasIntersection(&p, &playerdest) == SDL_TRUE)
+		{
 			return true;
+			checkover = true;
+		}
 	if (playerdest.y + playerdest.w >= HEIGHT)
 		return true;
+		checkover = true;
 	return false;
 }
 
-
 void CommonFuntion::run()
 {
-            Game();
-            if (game_over() == false)
+    menu();
+    changeState();
+    while(check1 == true)
+    {
+        Game();
+        if (checkover = true)
+        {
+            while(game_over() == true)
             {
-                running = false;
+                game_Over();
             }
+        }
+    }
+    cout<<Score<<endl;
+
 }
-
-

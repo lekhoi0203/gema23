@@ -1,0 +1,7 @@
+game Flappy bird là dự án lớn mà em đã chọn để thực hiện. Nó chưa đươc hoàn thiện.
+Em đã cố hết sức nghiên cứu nhưng cuối cùng vẫn không thể hoàn thành.
+
+Nhược điểm:
+- chưa có hệ thống tính điểm 
+- chưa có menu hoàn chỉnh.
+

@@ -33,10 +33,12 @@
 			<Add option="-std=gnu++11" />
 			<Add directory="F:/SDL2-2.0.5/x86_64-w64-mingw32/include/SDL2" />
 			<Add directory="F:/SDL2_image-2.0.5/x86_64-w64-mingw32/include/SDL2" />
+			<Add directory="F:/SDL2_mixer-2.0.4/x86_64-w64-mingw32/include/SDL2" />
 		</Compiler>
 		<Linker>
 			<Add option="-lmingw32 -lSDL2main -lSDL2" />
 			<Add option="-lSDL2_image" />
+			<Add option="-lSDL2_mixer" />
 			<Add library="mingw32" />
 			<Add library="SDL2main" />
 			<Add library="SDL2.dll" />
@@ -46,6 +48,7 @@
 			<Add library="dxguid" />
 			<Add directory="F:/SDL2-2.0.5/x86_64-w64-mingw32/lib" />
 			<Add directory="F:/SDL2_image-2.0.5/x86_64-w64-mingw32/lib" />
+			<Add directory="F:/SDL2_mixer-2.0.4/x86_64-w64-mingw32/lib" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="XCOPY $(#sdl2)\bin\*.dll $(TARGET_OUTPUT_DIR) /D /Y" />
